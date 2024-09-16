@@ -27,15 +27,49 @@ class Gegl < Formula
   depends_on "meson" => :build
   depends_on "ninja" => :build
   depends_on "pkg-config" => :build
+<<<<<<< Updated upstream
 
+||||||| Stash base
+=======
+  depends_on "cmake" => :build
+>>>>>>> Stashed changes
   depends_on "babl"
   depends_on "glib"
   depends_on "jpeg-turbo"
   depends_on "json-glib"
   depends_on "libpng"
+<<<<<<< Updated upstream
   depends_on "libtiff"
   depends_on "little-cms2"
+||||||| Stash base
+=======
+  depends_on "cairo"
+  depends_on "poppler"
+  depends_on "libnsgif"
+  depends_on "gdk-pixbuf"
+  depends_on "graphviz"
+  depends_on "gexiv2"
+  depends_on "jasper"
+  depends_on "little-cms2"
+  depends_on "lensfun"
+  depends_on "libraw"
+  depends_on "librsvg"
+  depends_on "libspiro"
+  depends_on "libtiff"
+  depends_on "lua"
+  depends_on "openexr"
+  depends_on "cairo"
+  depends_on "pango"
+  depends_on "poppler"
+  depends_on "pygobject3"
+  depends_on "sdl2"
+  depends_on "webp"
+  depends_on "suite-sparse"
+  depends_on "vala"
+  # depends_on "maxflow"
+>>>>>>> Stashed changes
 
+<<<<<<< Updated upstream
   on_macos do
     depends_on "gettext"
   end
@@ -44,6 +78,17 @@ class Gegl < Formula
     depends_on "cairo"
     depends_on "poppler"
   end
+||||||| Stash base
+  on_linux do
+    depends_on "cairo"
+    depends_on "poppler"
+  end
+=======
+  # on_linux do
+  #   depends_on "cairo"
+  #   depends_on "poppler"
+  # end
+>>>>>>> Stashed changes
 
   def install
     ### Temporary Fix ###
@@ -54,8 +99,10 @@ class Gegl < Formula
       "libpoly2tri_c = static_library('poly2tri-c',",
       "libpoly2tri_c = static_library('poly2tri-c', 'EMPTYFILE.c',"
     touch "subprojects/poly2tri-c/EMPTYFILE.c"
-    ### END Temporary Fix ###
+    # ### END Temporary Fix ###
+    ENV.prepend_path "PKG_CONFIG_PATH", "/opt/homebrew/opt/maxflow/lib/pkgconfig"
 
+<<<<<<< Updated upstream
     args = %w[
       -Ddocs=false
       -Dcairo=disabled
@@ -66,6 +113,24 @@ class Gegl < Formula
     ]
     system "meson", "setup", "build", *args, *std_meson_args
     system "meson", "compile", "-C", "build", "--verbose"
+||||||| Stash base
+    system "meson", *std_meson_args, "build",
+                    "-Ddocs=false",
+                    "-Dcairo=disabled",
+                    "-Djasper=disabled",
+                    "-Dumfpack=disabled",
+                    "-Dlibspiro=disabled",
+                    "--force-fallback-for=libnsgif,poly2tri-c"
+    system "meson", "compile", "-C", "build", "-v"
+=======
+    system "meson", *std_meson_args, "build",
+                    "-Ddocs=false",
+                    "-Dcairo=enabled",
+                    "-Dintrospection=true",
+                    "-Dvapigen=enabled",
+                    "--force-fallback-for=poly2tri-c"
+    system "meson", "compile", "-C", "build", "-v"
+>>>>>>> Stashed changes
     system "meson", "install", "-C", "build"
   end
 

@@ -33,7 +33,7 @@ class Babl < Formula
   depends_on "little-cms2"
 
   def install
-    system "meson", "setup", "build", *std_meson_args, "-Dwith-docs=false"
+    system "meson", "setup", "build", *std_meson_args, "-Dwith-docs=false", "-Denable-gir=true", "-Denable-vapi=true"
     system "meson", "compile", "-C", "build", "--verbose"
     system "meson", "install", "-C", "build"
   end

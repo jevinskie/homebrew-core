@@ -19,10 +19,10 @@ class Jpegoptim < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:   "5e35ae062ab96e9a8bd73a41cdfc896d2366db52f2ed2eb9a67a7a99167f49a2"
   end
 
-  depends_on "jpeg-turbo"
+  depends_on "mozjpeg"
 
   def install
-    system "./configure", *std_configure_args
+    system "./configure", *std_configure_args, "--with-arith"
     ENV.deparallelize # Install is not parallel-safe
     system "make", "install"
   end

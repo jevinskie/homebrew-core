@@ -29,7 +29,7 @@ class Mozjpeg < Formula
 
   def install
     args = std_cmake_args - %w[-DCMAKE_INSTALL_LIBDIR=lib]
-    system "cmake", "-S", ".", "-B", "build", "-DCMAKE_INSTALL_LIBDIR=#{lib}", *args
+    system "cmake", "-S", ".", "-B", "build", "-DCMAKE_INSTALL_LIBDIR=#{lib}", "-DWITH_ARITH_DEC=ON", "-DWITH_ARITH_ENC=ON", *args
     system "cmake", "--build", "build"
     system "cmake", "--install", "build"
   end

@@ -4,6 +4,7 @@ class ZlibNg < Formula
   url "https://github.com/zlib-ng/zlib-ng/archive/refs/tags/2.2.1.tar.gz"
   sha256 "ec6a76169d4214e2e8b737e0850ba4acb806c69eeace6240ed4481b9f5c57cdf"
   license "Zlib"
+  head "https://github.com/zlib-ng/zlib-ng", :branch "develop"
 
   # Upstream creates releases that use a stable tag (e.g., `v1.2.3`) but are
   # labeled as "pre-release" on GitHub before the version is released, so it's
@@ -30,9 +31,30 @@ class ZlibNg < Formula
     sha256 "68140a82582ede938159630bca0fb13a93b4bf1cb2e85b08943c26242cf8f3a6"
   end
 
+  option "with-cmake", "Compile with cmake"
+  option "with-compat", "Compile with zlib compat"
+  option "with-native", "Compile with native instructions on host mchine"
+
+  depends_on "cmake" => [:optional, :build]
+
   def install
-    system "./configure", "--prefix=#{prefix}"
-    system "make", "install"
+    if build.with? "cmake"
+      extra_cmake_args = %W[
+      ]
+      extra_cmake_args << "-DZLIB_COMPAT=ON" if build.with? "compat"
+      extra_cmake_args << "-DWITH_NATIVE_INSTRUCTIONS=ON" if build.with? "native"
+      system "cmake", "-S", ".", "-B", "build",
+      "-DCMAKE_CXX_STANDARD=17", *std_cmake_args
+      system "cmake", "--build", "build"
+      system "cmake", "--install", "build"
+    else
+      configure_args = %W[
+        -prefix=#{prefix}
+      ]
+      configure_args << "--zlib-compat" if build.with? "compat"
+      system "./configure", *configure_args
+      system "make", "install"
+    end
   end
 
   test do
@@ -54,5 +76,15 @@ class ZlibNg < Formula
     content = "Hello, Homebrew!"
     compressed = pipe_output("./zpipe", content)
     assert_equal content, pipe_output("./zpipe -d", compressed)
+
+    if build.with? "compat"
+      testpath.install resource("homebrew-test_artifact")
+  
+      system ENV.cc, "zpipe.c", "-I#{include}", "-L#{lib}", "-lz-ng", "-o", "zpipe"
+  
+      content = "Hello, Homebrew!"
+      compressed = pipe_output("./zpipe", content)
+      assert_equal content, pipe_output("./zpipe -d", compressed)
+    end
   end
 end

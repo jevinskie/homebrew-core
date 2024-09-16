@@ -20,25 +20,89 @@ class Btop < Formula
 
   on_macos do
     depends_on "coreutils" => :build
+<<<<<<< Updated upstream
     depends_on "llvm" => :build if DevelopmentTools.clang_build_version <= 1499
+||||||| Stash base
+    depends_on "gcc" if DevelopmentTools.clang_build_version <= 1403
+
+    on_arm do
+      depends_on "gcc"
+      depends_on macos: :ventura
+      fails_with :clang
+    end
+=======
+<<<<<<< Updated upstream
+    depends_on "gcc" if DevelopmentTools.clang_build_version <= 1403
+
+    on_arm do
+      depends_on "gcc"
+      depends_on macos: :ventura
+      fails_with :clang
+    end
+||||||| Stash base
+    depends_on "gcc" if DevelopmentTools.clang_build_version <= 1403
+=======
+    # depends_on "gcc" if DevelopmentTools.clang_build_version <= 1403
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
   end
 
+<<<<<<< Updated upstream
   on_ventura do
     # Ventura seems to be missing the `source_location` header.
     depends_on "llvm" => :build
+||||||| Stash base
+  on_ventura do
+    depends_on "gcc"
+    fails_with :clang
+=======
+  # on_ventura do
+  #   depends_on "gcc"
+  #   fails_with :clang
+  # end
+
+<<<<<<< Updated upstream
+||||||| Stash base
+  on_arm do
+    depends_on "gcc"
+    depends_on macos: :ventura
+    fails_with :clang
+>>>>>>> Stashed changes
   end
 
+<<<<<<< Updated upstream
   # -ftree-loop-vectorize -flto=12 -s
   # Needs Clang 16 / Xcode 15+
   fails_with :clang do
     build 1499
     cause "Requires C++20 support"
   end
-
-  fails_with :gcc do
-    version "9"
-    cause "requires GCC 10+"
+||||||| Stash base
+  # -ftree-loop-vectorize -flto=12 -s
+  fails_with :clang do
+    build 1403
+    cause "Requires C++20 support"
   end
+=======
+=======
+  # on_arm do
+  #   depends_on "gcc"
+  #   depends_on macos: :ventura
+  #   fails_with :clang
+  # end
+>>>>>>> Stashed changes
+
+>>>>>>> Stashed changes
+  # -ftree-loop-vectorize -flto=12 -s
+  # fails_with :clang do
+  #   build 1403
+  #   cause "Requires C++20 support"
+  # end
+
+  # fails_with :gcc do
+  #   version "9"
+  #   cause "requires GCC 10+"
+  # end
 
   def install
     ENV.llvm_clang if OS.mac? && (DevelopmentTools.clang_build_version <= 1499 || MacOS.version == :ventura)

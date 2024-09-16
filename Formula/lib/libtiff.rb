@@ -5,6 +5,7 @@ class Libtiff < Formula
   mirror "https://fossies.org/linux/misc/tiff-4.6.0.tar.gz"
   sha256 "88b3979e6d5c7e32b50d7ec72fb15af724f6ab2cbf7e10880c360a77e4b5d99a"
   license "libtiff"
+  head "https://gitlab.com/libtiff/libtiff.git", branch: "master"
 
   livecheck do
     url "https://download.osgeo.org/libtiff/"
@@ -24,24 +25,21 @@ class Libtiff < Formula
     sha256 cellar: :any_skip_relocation, x86_64_linux:   "9a6e0bb56c39b72a33b0a5629dc3fd49e4f1391513bcf7d04a764523cc0321c8"
   end
 
+  depends_on "cmake" => :build
   depends_on "jpeg-turbo"
   depends_on "xz"
   depends_on "zstd"
   uses_from_macos "zlib"
 
   def install
-    args = %W[
-      --prefix=#{prefix}
-      --disable-dependency-tracking
-      --disable-webp
-      --enable-zstd
-      --enable-lzma
-      --with-jpeg-include-dir=#{Formula["jpeg-turbo"].opt_include}
-      --with-jpeg-lib-dir=#{Formula["jpeg-turbo"].opt_lib}
-      --without-x
-    ]
-    system "./configure", *args
-    system "make", "install"
+      ENV.prepend_path "PKG_CONFIG_PATH", Formula["jpeg-turbo"].opt_lib/"pkgconfig"
+      ENV.prepend_path "PKG_CONFIG_PATH", Formula["xz"].opt_lib/"pkgconfig"
+      ENV.prepend_path "PKG_CONFIG_PATH", Formula["zstd"].opt_lib/"pkgconfig"
+      ENV.append "CFLAGS", "-flto=full -O3 -fwhole-program-vtables"
+      ENV.append "CFLAGS", "-flto=full -O3 -fwhole-program-vtables"
+      system "cmake", "-S", ".", "-B", "build", *std_cmake_args
+      system "cmake", "--build", "build"
+      system "cmake", "--install", "build"
   end
 
   test do

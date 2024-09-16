@@ -23,8 +23,10 @@ class UutilsCoreutils < Formula
   depends_on "sphinx-doc" => :build
 
   on_macos do
-    conflicts_with "coreutils", because: "uutils-coreutils and coreutils install the same binaries"
-    conflicts_with "aardvark_shell_utils", because: "both install `realpath` binaries"
+    # conflicts_with "coreutils", because: "uutils-coreutils and coreutils install the same binaries"
+    keg_only "uutils-coreutils and coreutils install the same binaries"
+
+    # conflicts_with "aardvark_shell_utils", because: "both install `realpath` binaries"
   end
 
   conflicts_with "unp", because: "both install `ucat` binaries"

@@ -25,9 +25,7 @@ class Nano < Formula
   depends_on "gettext"
   depends_on "ncurses"
 
-  on_linux do
-    depends_on "libmagic"
-  end
+  depends_on "libmagic"
 
   def install
     system "./configure", "--disable-debug",
